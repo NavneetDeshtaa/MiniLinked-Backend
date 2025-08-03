@@ -29,8 +29,4 @@ A minimal social platform that allows users to register, share posts, and view p
 - View profile information: name, email, bio, etc.
 - View all posts by a specific user
 
----
-
-## 🔐 Demo Credentials (Optional)
-You can use the following demo account:
 
