@@ -42,5 +42,3 @@ A minimal and responsive social platform inspired by LinkedIn. This project allo
 - See all posts made by a specific user
 - Clean LinkedIn-inspired UI
 
-> You can use this demo account to try the platform:
-
