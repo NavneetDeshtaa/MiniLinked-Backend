@@ -1,8 +1,8 @@
-// src/pages/Register.jsx
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
+import Spinner from "../components/Spinner"; // ✅ Spinner import
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -12,26 +12,33 @@ export default function Register() {
     bio: "",
   });
 
+  const [loading, setLoading] = useState(false); // ✅ loading state
+
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/register`, formData);
-    if (res.status >= 200 && res.status < 300) {
-      const { user, token } = res.data;
-      login(user, token);
-      navigate("/");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true); // ✅ start loading
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/register`,
+        formData
+      );
+      if (res.status >= 200 && res.status < 300) {
+        const { user, token } = res.data;
+        login(user, token);
+        navigate("/");
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || "Registration failed");
+    } finally {
+      setLoading(false); // ✅ stop loading
     }
-  } catch (err) {
-    alert(err.response?.data?.message || "Registration failed");
-  }
-};
-
+  };
 
   return (
     <div className="min-h-[calc(100vh-7rem)] bg-white-100 flex items-center justify-center">
@@ -96,9 +103,10 @@ export default function Register() {
           </div>
           <button
             type="submit"
-            className="w-full py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition"
+            className="w-full py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition flex justify-center items-center gap-2"
+            disabled={loading}
           >
-            Register
+            {loading ? <Spinner /> : "Register"}
           </button>
         </form>
         <p className="mt-6 text-center text-sm text-gray-500">

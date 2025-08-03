@@ -2,9 +2,11 @@ import { useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import Spinner from "../components/Spinner"; // ✅ Import spinner
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false); // ✅ Spinner state
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -13,6 +15,7 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // ✅ Start spinner
     try {
       const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/login`, formData);
       const { user, token } = res.data;
@@ -21,6 +24,8 @@ export default function Login() {
       navigate("/");
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false); // ✅ Stop spinner
     }
   };
 
@@ -63,9 +68,10 @@ export default function Login() {
             </div>
             <button
               type="submit"
-              className="w-full py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition"
+              className="w-full py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition flex justify-center items-center gap-2"
+              disabled={loading}
             >
-              Sign In
+              {loading ? <Spinner /> : "Sign In"}
             </button>
           </form>
           <p className="mt-6 text-center text-sm text-gray-500">
